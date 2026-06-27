@@ -1,0 +1,11 @@
+# shadowshell direct dependencies
+# kept in sync with pyproject.toml [project].dependencies
+
+requests
+sqlalchemy
+pymysql
+pandas
+openpyxl
+openai
+pydantic
+httpx
