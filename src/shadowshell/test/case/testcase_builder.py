@@ -12,8 +12,8 @@ class_mame = 'TestCaseBuilder'
 
 class TestCaseBuilder(Starter):
   
-  def __init__(self, work_dir = None):
-    super().__init__(work_dir)
+  def __init__(self, app_dir = None):
+    super().__init__(app_dir)
 
   @function_monitor(class_mame)
   def build(self):

@@ -14,8 +14,8 @@ class_mame = 'Testee'
 
 class Testee(Starter):
 
-  def __init__(self, work_dir = None):
-    super().__init__(work_dir)
+  def __init__(self, app_dir = None):
+    super().__init__(app_dir)
 
   def tests(self, testcases):
     """ 批量执行测试用例 """

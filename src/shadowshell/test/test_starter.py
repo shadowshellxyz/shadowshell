@@ -12,8 +12,8 @@ class_mame = 'TestStarter'
 
 class TestStarter(Starter):
     
-  def __init__(self, work_dir = None):
-    super().__init__(work_dir)
+  def __init__(self, app_dir = None):
+    super().__init__(app_dir)
    
   def test(self):
     self.test0()

@@ -6,43 +6,43 @@ import os
 from shadowshell.serialize import SerializerFactory
 from shadowshell.model import Tree
 from shadowshell.monitor import function_monitor
-from shadowshell.chat import ChatStarter
+from shadowshell.boot import Starter
 
-class Sop(ChatStarter):
+class Sop(Starter):
 
     def __init__(self):
         super().__init__()
             
     def build(self, sop_path, root_name):
         """
-        构建
+        Build the SOP tree.
         @author: shadowshell<shadowshell@foxmail.com>
         """
-        self.__tree = Tree(sop_path, root_name)
-        self.__tree.build([(lambda node: self.__parse_out_code(node))])
-        self.root = self.__tree.root
+        self._tree = Tree(sop_path, root_name)
+        self._tree.build([(lambda node: self._parse_out_code(node))])
+        self.root = self._tree.root
     
-    def __parse_out_code(self, node):
+    def _parse_out_code(self, node):
         if node is None or node.name is None:
             return None
         node.out_code = node.name
     
     def dfs_traverse(self, output_path):
         """
-        DFS 遍历树并输出为 CSV 文件
+        DFS traverse the tree and output as CSV file.
 
         Args:
-            csv_output: CSV 输出文件路径，默认为 sop_traverse.csv
+            output_path: CSV output file path.
         """
        
-        self.__rows = []
-        self.__tree.dfs_traverse(self.root, [(lambda node: self.dd(node))])
+        self._rows = []
+        self._tree.dfs_traverse(self.root, [(lambda node: self.dd(node))])
 
-        # 写入 CSV 文件
+        # write CSV headers
         with open(output_path, 'w', newline='', encoding='utf-8-sig') as f:
             writer = csv.writer(f)
             writer.writerow(['一级场景', '描述及示例', '二级场景', '描述及示例', '三级场景', '描述及示例', '四级场景（可选）', '描述及示例', '五级场景（可选）', '描述及示例', '对话动作', '备注'])
-            for row in self.__rows:
+            for row in self._rows:
                 writer.writerow(row)
 
         print(f'CSV output written to: {output_path}')
@@ -66,13 +66,13 @@ class Sop(ChatStarter):
         while len(result) < 10:
             result.append('')
 
-        # read actions.md from leaf node for 对话动作 column
+        # read actions.md from leaf node for dialogue action column
         actions_path = os.path.join(node.code, 'actions.md')
         actions_content = self.get_file_content(actions_path)
         result.append(actions_content)
 
-        # 备注 column
+        # notes column
         result.append('')
 
-        self.__rows.append(result)
+        self._rows.append(result)
     

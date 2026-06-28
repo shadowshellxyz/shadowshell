@@ -4,37 +4,37 @@
 from shadowshell.serialize import SerializerFactory
 from shadowshell.model import Tree
 from shadowshell.monitor import function_monitor
-from .chat_starter import ChatStarter
+from shadowshell.boot import Starter
 
 from .intention_example import IntentionExampleCategory, IntentionExample
 class_name = 'XOT'
 
-class XoT(ChatStarter):
+class XoT(Starter):
     
     """
     Everything of Thoughts
     @author: shadowshell<shadowshell@foxmail.com>
     """
 
-    def __init__(self, work_dir):
-        super().__init__(work_dir)
+    def __init__(self, app_dir):
+        super().__init__(app_dir)
             
     def build(self, sop_path, root_name):
         """
-        构建
+        Build the XoT tree.
         """
-        self.__tree = Tree(sop_path, root_name)
-        self.__tree.build([(lambda node: self.__parse_out_code(node))])
-        self.root = self.__tree.root
+        self._tree = Tree(sop_path, root_name)
+        self._tree.build([(lambda node: self._parse_out_code(node))])
+        self.root = self._tree.root
 
-    def __parse_out_code(self, node):
+    def _parse_out_code(self, node):
         if node is None or node.name is None or node.name.find("@") == -1:
             return None
         
         node.out_code = node.name.split("@")[0]
 
     def find(self, code):
-        return self.__tree.find_by_out_code(code)
+        return self._tree.find_by_out_code(code)
     
     @function_monitor(class_name)
     def recall_examples(self, node):
@@ -71,7 +71,7 @@ class XoT(ChatStarter):
         content = self.get_file_content(final_file_name)
 
         if content is None or content == '':
-            content = self.get_content(self.__tree.root, final_file_name)
+            content = self.get_content(self._tree.root, final_file_name)
         
         return content
     

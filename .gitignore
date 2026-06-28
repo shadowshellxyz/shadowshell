@@ -214,3 +214,4 @@ examples/.pki
 .config/
 log
 /*.jpg
+.claude/

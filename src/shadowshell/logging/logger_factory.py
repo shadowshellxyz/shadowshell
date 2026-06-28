@@ -10,17 +10,36 @@ import ast
 import logging
 import logging.config
 import os
+import threading
 from configparser import RawConfigParser
 
 from .logging_logger import LoggingLogger
-from .logging_constants import LoggingConstants
+
+_LOCK = threading.Lock()
+_INITIALIZED = False
+
 
 class LoggerFactory:
 
     @staticmethod
-    def init():
+    def init(conf_path=None):
+        """
+        Initialize logging from a configuration file. Thread-safe; only the
+        first call takes effect — subsequent calls are ignored.
+
+        Args:
+            conf_path: Path to the logging.conf file. If None, no-op.
+        """
+        global _INITIALIZED
+        if conf_path is None:
+            return
+        with _LOCK:
+            if _INITIALIZED:
+                return
+            _INITIALIZED = True
+
         cp = RawConfigParser()
-        cp.read(LoggingConstants.logging_conf_dir, encoding='utf-8')
+        cp.read(conf_path, encoding='utf-8')
         home = os.path.expanduser('~')
         for section in cp.sections():
             if cp.has_option(section, 'args'):
@@ -29,7 +48,6 @@ class LoggerFactory:
                 cp.set(section, 'args', args)
                 LoggerFactory._ensure_log_dir(args)
         logging.config.fileConfig(cp)
-        LoggerFactory._initialized = True
 
     @staticmethod
     def _ensure_log_dir(args):
@@ -45,6 +63,5 @@ class LoggerFactory:
             pass
 
     @staticmethod
-    def get_logger(name = 'root'):
+    def get_logger(name='root'):
         return LoggingLogger(logging.getLogger(name))
-    

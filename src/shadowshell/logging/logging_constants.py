@@ -6,6 +6,7 @@ logging_constants
 @author: shadowshell<shadowshell@foxmail.com>
 """
 
+
 class LoggingConstants:
 
     LEVEL_DEBUG = False
@@ -13,4 +14,4 @@ class LoggingConstants:
     LEVEL_WARN = True
     LEVEL_ERROR = True
 
-    logging_conf_dir = "./config/logging.conf"
+    DEFAULT_LOGGING_CONF_DIR = "./config/logging.conf"

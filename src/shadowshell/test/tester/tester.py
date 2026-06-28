@@ -15,10 +15,10 @@ class_mame = 'Tester'
 
 class Tester(TestStarter):
 
-    def __init__(self, work_dir = None):
-        super().__init__(work_dir)
+    def __init__(self, app_dir = None):
+        super().__init__(app_dir)
         self.__testee = Testee()
-        self.__testcase_builder = TestCaseBuilder(work_dir)
+        self.__testcase_builder = TestCaseBuilder(app_dir)
 
     @function_monitor(class_mame)
     def test(self):
@@ -33,8 +33,8 @@ class Tester(TestStarter):
     
 class DefaultTester(Tester):
 
-    def __init__(self, testee, testcase_builder, work_dir = None):
-        super().__init__(work_dir)
+    def __init__(self, testee, testcase_builder, app_dir = None):
+        super().__init__(app_dir)
         self.__testee = testee
         self.__testcase_builder = testcase_builder
     
