@@ -4,13 +4,16 @@
 
 ### Production
 
-```shell
+```bash
 pip3 install shadowshell --upgrade
 ```
 
 ### Test (Test PyPI)
 
-```shell
-pip3 install --index-url https://test.pypi.org/simple/ --no-deps shadowshell --upgrade
+``` bash
+python3 -m pip install \
+    --index-url https://test.pypi.org/simple/ \
+    --extra-index-url https://mirrors.aliyun.com/pypi/simple/ \
+    shadowshell --upgrade
 ```
 
