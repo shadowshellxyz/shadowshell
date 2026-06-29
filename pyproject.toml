@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shadowshell"   # 全局唯一名称（检查PyPI是否被占用）
-version = "202600000007"          # 版本号（每次更新需递增）
+version = "202600000010"          # 版本号（每次更新需递增）
 authors = [{ name = "shadowshell", email = "shadowshell@foxmail.com" }]
 description = "www.shadowshell.xyz"
 readme = "README.md"

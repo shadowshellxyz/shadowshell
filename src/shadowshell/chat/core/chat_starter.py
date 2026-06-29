@@ -24,7 +24,7 @@ class ChatStarter(Starter):
     @author: shadowshell<shadowshell@foxmail.com>
     """
 
-    def __init__(self, app_dir=None, sop_path=None, config_group="llm_chatbot", action_handler_factory=None):
+    def __init__(self, action_handler_factory, app_dir=None, sop_path=None, config_group="llm_chatbot"):
         super().__init__(app_dir)
         self._config_group = config_group
         self._handler_factory = action_handler_factory
@@ -58,10 +58,9 @@ class ChatStarter(Starter):
     @function_monitor(class_name)
     def _handle_action(self, intent_node, user_input):
         actions_config = self._load_actions_config(intent_node)
-        if actions_config:
+        if actions_config is not None:
             return self._dispatch_handlers(actions_config, intent_node, user_input)
-        return self.tts.action(intent_node, user_input)
-
+            
     def _load_actions_config(self, node):
         """Load actions.json from the node directory, or None if not found."""
         if node is None or node.code is None:
@@ -73,18 +72,10 @@ class ChatStarter(Starter):
 
     def _dispatch_handlers(self, actions_config, intent_node, user_input):
         """Instantiate handlers from actions.json config and execute them in order."""
-        from .action.action_handler_factory import ActionHandlerFactory
         from .action.action_handler_meta import ActionHandlerMeta
         from shadowshell.serialize import SerializerFactory
         llm_config = LlmConfig().build(self.configurator, self._config_group)
         serializer = SerializerFactory.get_instance()
         metas = [ActionHandlerMeta(**serializer.deserialize(serializer.serialize(item))) for item in actions_config]
-        factory = self._handler_factory if self._handler_factory is not None else ActionHandlerFactory()
-        handlers = factory.create(metas, self.app_dir, llm_config)
-        results = []
         context = {'node': intent_node, 'user_input': user_input}
-        for handler in handlers:
-            result = handler.execute(intent_node.out_code, context)
-            if result:
-                results.append(result)
-        return '\n'.join(results) if results else None
+        return self._handler_factory.dispatch(metas, intent_node.out_code, context)

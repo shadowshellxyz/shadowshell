@@ -23,7 +23,7 @@ class FileUtil:
             return None
         with open(file_path, mode, encoding = encoding) as f:
             content = f.read()
-        FileUtil.__logger.info(f'[{file_path}][All content]{content}')
+        FileUtil.__logger.debug(f'[{file_path}][All content]{content}')
         return content
     
     @staticmethod
