@@ -12,8 +12,8 @@ from shadowshell.chat.common.llm_client import LlmClient, LlmConfig
 # direct modules (implementation)
 # subpackages
 from shadowshell.chat.core.model import XoT
-from shadowshell.chat.core.action import Tts, GenChatAction2, ScriptGenerationHandler
-from shadowshell.chat.core.intention.model import Sop
+from shadowshell.chat.core.action import ScriptGenerationHandler
+from shadowshell.chat.op import Sop
 
 # intention: due to circular import risk, __init__.py is kept minimal; import directly from the module here
 from shadowshell.chat.core.intention.intention_recognizer import IntentionRecognizer
@@ -26,8 +26,6 @@ __all__ = [
     'LlmConfig',
     'XoT',
     'Sop',
-    'Tts',
-    'GenChatAction2',
     'ScriptGenerationHandler',
     'IntentionRecognizer',
     'LlmIntentionRecognizer',

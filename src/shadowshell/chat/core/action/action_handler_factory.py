@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from shadowshell.chat.core.action.action_handler import ActionHandler
-from shadowshell.chat.core.action.action_handler_meta import ActionHandlerMeta
+from shadowshell.chat.core.action.model import ActionHandlerMeta
 
 
 class ActionHandlerFactory(ABC):

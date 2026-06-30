@@ -49,7 +49,7 @@ class LlmClient:
 
     Encapsulates OpenAI client initialization, chat completion, message preparation,
     and system prompt management. Designed to be instantiated by classes that need
-    LLM functionality (LlmIntentionRecognizer, Tts, GenChatAction2, etc.).
+    LLM functionality (LlmIntentionRecognizer, ScriptGenerationHandler, etc.).
 
     @author: shadowshell<shadowshell@foxmail.com>
     """

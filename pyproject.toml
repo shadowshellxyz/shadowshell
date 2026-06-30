@@ -8,10 +8,14 @@ version = "202600000010"          # 版本号（每次更新需递增）
 authors = [{ name = "shadowshell", email = "shadowshell@foxmail.com" }]
 description = "www.shadowshell.xyz"
 readme = "README.md"
-requires-python = ">=3.6"  # 支持的Python版本
+requires-python = ">=3.10"  # 需 ≥3.10（使用了 X | Y union 语法）
 license = { text = "MIT" }  # 协议类型
-classifiers = [             # 分类标签（可选）
+classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
 ]
 
@@ -23,6 +27,8 @@ dependencies = [
     "pandas",
     "openpyxl",
     "openai",
+    "pydantic",
+    "httpx",
 ]
 
 # 关键配置：指定包路径和自动发现规则

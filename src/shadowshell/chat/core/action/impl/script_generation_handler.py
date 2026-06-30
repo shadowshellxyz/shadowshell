@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from shadowshell.chat.common.llm_client import LlmClient
+from shadowshell.chat.common.llm_client import LlmClient, LlmConfig
 from shadowshell.chat.core.action.action_handler import ActionHandler
-from shadowshell.chat.core.action.action_handler_meta import ActionHandlerMeta
+from shadowshell.chat.core.action.model import ActionHandlerMeta
 from shadowshell.boot import Starter
 from shadowshell.serialize import SerializerFactory
 from shadowshell.monitor import function_monitor
@@ -26,7 +26,7 @@ class ScriptGenerationHandler(Starter, ActionHandler):
     """
 
     @function_monitor(class_name)
-    def __init__(self, app_dir, llm_config, meta: ActionHandlerMeta = None):
+    def __init__(self, app_dir, llm_config: LlmConfig, meta: ActionHandlerMeta = None):
         super().__init__(app_dir)
         self.meta = meta
         self.llm = LlmClient(llm_config)

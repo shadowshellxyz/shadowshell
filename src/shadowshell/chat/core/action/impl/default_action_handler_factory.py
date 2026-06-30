@@ -7,31 +7,32 @@ Default implementation of ActionHandlerFactory.
 @author: shadowshell<shadowshell@foxmail.com>
 """
 
+from shadowshell.chat.common.llm_client import LlmConfig
 from shadowshell.chat.core.action.action_handler import ActionHandler
-from shadowshell.chat.core.action.action_handler_meta import ActionHandlerMeta
+from shadowshell.chat.core.action.model import ActionHandlerMeta
 from shadowshell.chat.core.action.action_handler_factory import ActionHandlerFactory
-from shadowshell.chat.core.action.impl.script_generation_handler import ScriptGenerationHandler
 
 
 class DefaultActionHandlerFactory(ActionHandlerFactory):
     """
     Default concrete implementation of ActionHandlerFactory.
 
-    Maintains a built-in registry with "script-generation" handler pre-registered.
-    Supports runtime registration of additional handler types via register().
+    Maintains an empty registry at construction time.  All handler types
+    must be explicitly registered via register() before calling create().
 
     Infrastructure dependencies (app_dir, llm_config) are injected at construction
     time rather than passed to each method call.
 
     Usage:
         factory = DefaultActionHandlerFactory(app_dir, llm_config)
+        factory.register("script-generation", ScriptGenerationHandler)
         metas = [ActionHandlerMeta(type="script-generation", code="sg-001")]
         handlers = factory.create(metas)
 
     @author: shadowshell<shadowshell@foxmail.com>
     """
 
-    def __init__(self, app_dir: str, llm_config):
+    def __init__(self, app_dir: str, llm_config: LlmConfig):
         """
         Args:
             app_dir:    Working directory for file operations.
@@ -39,9 +40,7 @@ class DefaultActionHandlerFactory(ActionHandlerFactory):
         """
         self._app_dir = app_dir
         self._llm_config = llm_config
-        self._registry = {
-            "script-generation": ScriptGenerationHandler,
-        }
+        self._registry = {}
 
     def create(self, metas: list[ActionHandlerMeta]) -> list[ActionHandler]:
         """

@@ -16,7 +16,7 @@ from shadowshell.boot import Starter
 from shadowshell.chat.common.llm_client import LlmClient
 
 from shadowshell.chat.core.action.action_handler import ActionHandler
-from shadowshell.chat.core.action.action_handler_meta import ActionHandlerMeta
+from shadowshell.chat.core.action.model import ActionHandlerMeta
 from shadowshell.chat.core.action.action_handler_factory import ActionHandlerFactory
 
 class_name = 'LocalTreeActionHandlerFactory'
@@ -30,11 +30,12 @@ class LocalTreeActionHandlerFactory(Starter, ActionHandlerFactory):
     the ActionHandlerFactory interface for handler lifecycle management.
 
     Infrastructure dependencies (app_dir, llm_config) are injected at
-    construction time — app_dir via Starter, llm_config directly.
+    construction time.  llm_config is optional — set it before calling
+    methods that require LLM access (_before_execute, _after_execute, create).
 
     Usage:
         factory = LocalTreeActionHandlerFactory(app_dir, llm_config)
-        factory.build(sop_path)
+        factory.build(action_handlers_dir)
         factory.register("echo", EchoHandler)
         handlers = factory.create(metas)
 
@@ -53,15 +54,18 @@ class LocalTreeActionHandlerFactory(Starter, ActionHandlerFactory):
 
     # ── Tree operations ─────────────────────────────────────────────────
 
-    def build(self, mcps_path):
+    def build(self, action_handlers_dir=None):
         """
-        Build the LocalTreeActionHandlerFactory tree from an MCPs path.
+        Build the action handler tree from the action handlers directory.
 
         Args:
-            mcps_path: Path to the MCPs directory structure.
+            action_handlers_dir: Path to the action handlers directory structure.
+                                 Defaults to config.action_handlers_dir if omitted.
         """
-        self._mcps_path = mcps_path
-        self._tree = Tree(mcps_path)
+        if action_handlers_dir is None:
+            raise ValueError("action_handlers_dir is required")
+        self._action_handlers_dir = action_handlers_dir
+        self._tree = Tree(action_handlers_dir)
         self._tree.build([(lambda node: self._parse_out_code(node))])
         self.root = self._tree.root
 
@@ -130,7 +134,7 @@ class LocalTreeActionHandlerFactory(Starter, ActionHandlerFactory):
         """
         if not hasattr(self, '_tree'):
             raise RuntimeError(
-                "Tree has not been built — call build(mcps_path) before create()"
+                "Tree has not been built — call build(action_handlers_dir) before create()"
             )
 
         handlers = []
@@ -172,7 +176,7 @@ class LocalTreeActionHandlerFactory(Starter, ActionHandlerFactory):
             An ActionHandler subclass found in the module, or None if the
             file does not exist or contains no valid handler class.
         """
-        handler_path = os.path.join(self._mcps_path, node.code, 'handler.py')
+        handler_path = os.path.join(self._action_handlers_dir, node.code, 'handler.py')
         if not os.path.isfile(handler_path):
             return None
 
