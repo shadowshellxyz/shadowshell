@@ -15,7 +15,7 @@ class_mame = 'Tester'
 
 class Tester(TestStarter):
 
-    def __init__(self, app_dir = None):
+    def __init__(self, app_dir=None):
         super().__init__(app_dir)
         self.__testee = Testee()
         self.__testcase_builder = TestCaseBuilder(app_dir)

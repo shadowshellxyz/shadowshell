@@ -17,7 +17,7 @@ class_mame = 'CartesianProductTestCaseBuilder'
 
 class CartesianProductTestCaseBuilder(TestCaseBuilder):
   
-  def __init__(self, app_dir = None):
+  def __init__(self, app_dir=None):
     super().__init__(app_dir)
     self.data_file_name = self.configurator.get('test', 'data_file_name')
 
@@ -31,7 +31,7 @@ class CartesianProductTestCaseBuilder(TestCaseBuilder):
         return    
     items_all = []
     for script_path in script_path_list:
-      part_items = self.__extract_items(f'{self.app_dir}/{script_path}')
+      part_items = self.__extract_items(f'{script_path}')
       items_all.append(part_items)
     self.arrays = items_all
 

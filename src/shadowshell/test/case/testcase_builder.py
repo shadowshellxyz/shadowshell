@@ -12,7 +12,7 @@ class_mame = 'TestCaseBuilder'
 
 class TestCaseBuilder(Starter):
   
-  def __init__(self, app_dir = None):
+  def __init__(self, app_dir=None):
     super().__init__(app_dir)
 
   @function_monitor(class_mame)

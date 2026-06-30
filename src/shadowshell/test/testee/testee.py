@@ -14,7 +14,7 @@ class_mame = 'Testee'
 
 class Testee(Starter):
 
-  def __init__(self, app_dir = None):
+  def __init__(self, app_dir=None):
     super().__init__(app_dir)
 
   def tests(self, testcases):
