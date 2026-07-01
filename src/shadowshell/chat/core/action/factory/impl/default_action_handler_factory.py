@@ -10,7 +10,7 @@ Default implementation of ActionHandlerFactory.
 from shadowshell.chat.common.llm_client import LlmConfig
 from shadowshell.chat.core.action.action_handler import ActionHandler
 from shadowshell.chat.core.action.model import ActionHandlerMeta
-from shadowshell.chat.core.action.action_handler_factory import ActionHandlerFactory
+from shadowshell.chat.core.action.factory.action_handler_factory import ActionHandlerFactory
 
 
 class DefaultActionHandlerFactory(ActionHandlerFactory):
@@ -26,7 +26,7 @@ class DefaultActionHandlerFactory(ActionHandlerFactory):
     Usage:
         factory = DefaultActionHandlerFactory(app_dir, llm_config)
         factory.register("script-generation", ScriptGenerationHandler)
-        metas = [ActionHandlerMeta(type="script-generation", code="sg-001")]
+        metas = [ActionHandlerMeta(name="script-gen", code="sg-001", type="script-generation")]
         handlers = factory.create(metas)
 
     @author: shadowshell<shadowshell@foxmail.com>

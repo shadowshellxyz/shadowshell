@@ -5,45 +5,37 @@
 """
 
 from shadowshell.boot import Starter
-from shadowshell.chat.common.llm_client import LlmConfig
 from shadowshell.monitor import function_monitor
 
+from .action.factory.action_handler_factory import ActionHandlerFactory
 from .action.model import ActionHandlerMeta
-from .intention.impl import LlmIntentionRecognizer
+from .intention.intention_recognizer import IntentionRecognizer
 
 class_name = "ChatStarter"
 
+
 class ChatStarter(Starter):
     """
-    Chat starter — chatbot orchestration with file operations.
+    Chat starter — chatbot orchestration.
 
-    Receives app_dir, LlmConfig, and sop_path directly in the constructor.
-    Each ChatStarter instance holds its own state for full multi-instance isolation.
+    Receives LlmIntentionRecognizer and ActionHandlerFactory via constructor.
 
     Usage:
-        chat = ChatStarter(action_handler_factory, app_dir="/path",
-                           llm_config=llm_config, sop_path="/sop")
+        chat = ChatStarter(intention_recognizer, action_handler_factory)
 
     @author: shadowshell<shadowshell@foxmail.com>
     """
 
-    def __init__(self, action_handler_factory, app_dir=None, llm_config=None, sop_path=None):
-        super().__init__(app_dir)
+    def __init__(self, intention_recognizer: IntentionRecognizer,
+                 action_handler_factory: ActionHandlerFactory):
+        super().__init__()
+        self.intention_recognizer = intention_recognizer
         self._handler_factory = action_handler_factory
-        self._llm_config = llm_config
-        if sop_path:
-            self._init_chat(sop_path)
 
     def __repr__(self):
         return self.__class__.__name__
 
     # ── chat orchestration ──────────────────────────────────────────────
-
-    def _init_chat(self, sop_path):
-        """Initialize chat components."""
-        self.intention_recognizer = LlmIntentionRecognizer(
-            self.app_dir, self._llm_config, sop_path
-        )
 
     @function_monitor(class_name)
     def chat(self, user_input):

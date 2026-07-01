@@ -15,11 +15,17 @@ class ActionHandlerMeta:
     @author: shadowshell<shadowshell@foxmail.com>
     """
 
-    type: str
-    """Handler type identifier, e.g. 'script-generation'."""
+    name: str
+    """Handler name."""
 
     code: str
     """Unique code for this action instance."""
 
+    type: str
+    """Handler type identifier, e.g. 'script-generation'."""
+
     description: str = ""
     """Human-readable description of this action."""
+
+    ext_info: str | None = None
+    """Optional extension information (extra context, metadata, etc.)."""

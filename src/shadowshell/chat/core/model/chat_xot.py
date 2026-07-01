@@ -6,11 +6,13 @@ import os
 from shadowshell.file import FileUtil
 from shadowshell.model import Tree
 
-from .intention_example import IntentionExampleCategory, IntentionExample
-class_name = 'XOT'
+from .chat_base_model import ChatBaseModel
+from .chat_intention_example import ChatIntentionExampleCategory, ChatIntentionExample
+
+class_name = 'ChatXoT'
 
 
-class XoT:
+class ChatXoT(ChatBaseModel):
 
     """
     Everything of Thoughts — tree-based intent hierarchy.
@@ -21,8 +23,11 @@ class XoT:
     @author: shadowshell<shadowshell@foxmail.com>
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, tenant_code: str = None, biz_code: str = None,
+                 id: str = "", description: str = "", ext_info: dict = None):
+        super().__init__(id=id, description=description, ext_info=ext_info or {})
+        self.tenant_code = tenant_code
+        self.biz_code = biz_code
 
     def build(self, sop_path, root_name=None):
         """Build the XoT tree.  root_name defaults to the last segment of sop_path."""
@@ -48,8 +53,8 @@ class XoT:
             if child is None:
                 continue
             file_name = f'{child.code}/fewshots.md'
-            example_category = IntentionExampleCategory(child.out_code, child.name)
-            examples.append(IntentionExample(example_category, self._read_file(file_name)))
+            example_category = ChatIntentionExampleCategory(child.out_code, child.name)
+            examples.append(ChatIntentionExample(example_category, self._read_file(file_name)))
         return examples
 
     def get_children_content(self, node):

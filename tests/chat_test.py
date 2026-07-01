@@ -10,7 +10,8 @@ from pathlib import Path
 from shadowshell.config import Configurator
 from shadowshell.chat.common.llm_client import LlmConfig
 from shadowshell.chat.core.chat_starter import ChatStarter
-from shadowshell.chat.core.action.impl import LocalTreeActionHandlerFactory,ScriptGenerationHandler
+from shadowshell.chat.core.action.impl import ScriptGenerationHandler
+from shadowshell.chat.core.action.factory.impl import LocalTreeActionHandlerFactory
 from shadowshell.test import Testee, Tester, CartesianProductTestCaseBuilder
 
 current_dir = Path(__file__).parent.resolve()
@@ -32,8 +33,7 @@ class ChatTest:
         action_handler_factory = LocalTreeActionHandlerFactory(app_dir, llm_config)
         action_handler_factory.build(action_handlers_dir)
 
-        script_generation_handler = ScriptGenerationHandler(app_dir, llm_config)
-        action_handler_factory.register(script_generation_handler.handler_type(), script_generation_handler)
+        action_handler_factory.register("script-generation", ScriptGenerationHandler)
 
         chat_starter = ChatStarter(action_handler_factory, app_dir=app_dir,
                                    llm_config=llm_config, sop_path=sop_path)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from ...model.xot import XoT
+from ...model.chat_xot import ChatXoT
 from shadowshell.chat.common.llm_client import LlmClient, LlmConfig
 from shadowshell.chat.core.intention.intention_recognizer import IntentionRecognizer
 from shadowshell.file import FileUtil
@@ -31,7 +31,7 @@ class LlmIntentionRecognizer(IntentionRecognizer):
         self.app_dir = app_dir
         self.llm = LlmClient(llm_config)
         self.init_messages()
-        self.xot = XoT()
+        self.xot = ChatXoT()
         self.xot.build(sop_path)
         self.userinput_rewrite_tmpl = FileUtil.get_all(f'{self.app_dir}/templates/global_userinput_tmpl.md')
 

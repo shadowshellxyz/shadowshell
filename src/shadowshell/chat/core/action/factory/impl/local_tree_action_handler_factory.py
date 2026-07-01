@@ -17,7 +17,7 @@ from shadowshell.chat.common.llm_client import LlmClient
 
 from shadowshell.chat.core.action.action_handler import ActionHandler
 from shadowshell.chat.core.action.model import ActionHandlerMeta
-from shadowshell.chat.core.action.action_handler_factory import ActionHandlerFactory
+from shadowshell.chat.core.action.factory.action_handler_factory import ActionHandlerFactory
 
 class_name = 'LocalTreeActionHandlerFactory'
 

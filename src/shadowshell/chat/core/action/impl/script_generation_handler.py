@@ -4,7 +4,8 @@
 from shadowshell.chat.common.llm_client import LlmClient, LlmConfig
 from shadowshell.chat.core.action.action_handler import ActionHandler
 from shadowshell.chat.core.action.model import ActionHandlerMeta
-from shadowshell.boot import Starter
+from shadowshell.file import FileUtil
+from shadowshell.logging import LoggerFactory
 from shadowshell.serialize import SerializerFactory
 from shadowshell.monitor import function_monitor
 
@@ -13,7 +14,7 @@ def serialize(req):
 
 class_name = "ScriptGenerationHandler"
 
-class ScriptGenerationHandler(Starter, ActionHandler):
+class ScriptGenerationHandler(ActionHandler):
     """
     Script generation action handler — generates dialogue scripts via LLM.
 
@@ -27,11 +28,11 @@ class ScriptGenerationHandler(Starter, ActionHandler):
 
     @function_monitor(class_name)
     def __init__(self, app_dir, llm_config: LlmConfig, meta: ActionHandlerMeta = None):
-        super().__init__(app_dir)
+        self.app_dir = app_dir
         self.meta = meta
         self.llm = LlmClient(llm_config)
         self.init_messages()
-        self.userinput_rewrite_tmpl = self.get_file_content(
+        self.userinput_rewrite_tmpl = FileUtil.get_all(
             f'{self.app_dir}/templates/script_generation_userinput_tmpl.md'
         )
 
@@ -42,13 +43,13 @@ class ScriptGenerationHandler(Starter, ActionHandler):
     @function_monitor(class_name, serialize)
     def init_messages(self):
         """Initialize the messages array from history file."""
-        content = self.get_file_content(f'{self.app_dir}/historyMessages/script_generation.json')
-        self.messages = self.deserialize(content) if content else []
+        content = FileUtil.get_all(f'{self.app_dir}/historyMessages/script_generation.json')
+        self.messages = SerializerFactory.get_instance().deserialize(content) if content else []
 
     @function_monitor(class_name, serialize)
     def get_prompts(self):
         """Load the system prompt for script generation."""
-        return self.get_file_content(f'{self.app_dir}/prompts/script_generation_prompt.md')
+        return FileUtil.get_all(f'{self.app_dir}/prompts/script_generation_prompt.md')
 
     @function_monitor(class_name, serialize)
     def execute(self, intent_code: str, context: dict) -> str:
@@ -75,7 +76,7 @@ class ScriptGenerationHandler(Starter, ActionHandler):
 
     @function_monitor(class_name, serialize)
     def _execute(self, node, messages, user_input=None):
-        scenario_context = self.get_file_content(f'{node.code}/{self.meta.code}.md')
+        scenario_context = FileUtil.get_all(f'{node.code}/{self.meta.code}.md')
         prompt = self.get_prompts()
         if prompt:
             messages = self.llm.prepend_system_prompt(messages, prompt)
@@ -89,3 +90,7 @@ class ScriptGenerationHandler(Starter, ActionHandler):
         return (self.userinput_rewrite_tmpl
                 .replace('{{user.query}}', user_input or '')
                 .replace('{{context}}', scenario_context or ''))
+
+    def get_logger(self, logger_name='root'):
+        """Minimal logger access for @function_monitor compatibility."""
+        return LoggerFactory.get_logger(logger_name)
