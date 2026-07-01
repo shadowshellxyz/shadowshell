@@ -10,7 +10,7 @@ from pathlib import Path
 from shadowshell.config import Configurator
 from shadowshell.chat.common.llm_client import LlmConfig
 from shadowshell.chat.core.chat_starter import ChatStarter
-from shadowshell.chat.core.action.impl import LocalTreeActionHandlerFactory
+from shadowshell.chat.core.action.impl import LocalTreeActionHandlerFactory,ScriptGenerationHandler
 from shadowshell.test import Testee, Tester, CartesianProductTestCaseBuilder
 
 current_dir = Path(__file__).parent.resolve()
@@ -18,55 +18,26 @@ current_dir = Path(__file__).parent.resolve()
 app_dir = f'{current_dir.parent}/demo'
 assets_dir = f'{current_dir.parent.parent}/roomie-assets'
 action_handlers_dir = f'{assets_dir}/mcps/0000@shared'
-sop_path = f'{assets_dir}/sops/assistant/100@聊天工作台'
-testcases_path = '/Users/shadowwalker/shadowshell/roomie-assets/evaluation-sets/aicaller/F'
+sop_path = f'{assets_dir}/sops/aicaller/0000@root'
 
-class TestChat:
+class ChatTest:
 
     def __init__(self, app_dir=None):
         self._app_dir = app_dir
 
-    def chat(self, question='值班查询'):
+    def chat(self, question):
         configurator = Configurator(f'{app_dir}/config/app.ini')
         llm_config = LlmConfig().build(configurator, "llm_chatbot")
 
         action_handler_factory = LocalTreeActionHandlerFactory(app_dir, llm_config)
         action_handler_factory.build(action_handlers_dir)
 
+        script_generation_handler = ScriptGenerationHandler(app_dir, llm_config)
+        action_handler_factory.register(script_generation_handler.handler_type(), script_generation_handler)
+
         chat_starter = ChatStarter(action_handler_factory, app_dir=app_dir,
                                    llm_config=llm_config, sop_path=sop_path)
         chat_starter.chat(question)
 
-class DefaultTestee(Testee):
-
-    def __init__(self, app_dir=None):
-        super().__init__(app_dir)
-        # self._test_chat = TestChat(app_dir)
-
-
-    def test(self, testcase):
-        self.get_logger().info(f'执行 testcase -> {testcase}')
-        # self._test_chat.chat(testcase)
-        pass
-
-class DefaultTestCaseBuilder(CartesianProductTestCaseBuilder):
-
-    def __init__(self, app_dir=None):
-        super().__init__(app_dir)
-        
-
-class DefaultTester(Tester):
-
-    def __init__(self, app_dir=None):
-        super().__init__(app_dir)
-        self.__testee = DefaultTestee(app_dir)
-        self.__testcase_builder = DefaultTestCaseBuilder(app_dir)
-
-    def get_testee(self):
-        return self.__testee
-    
-    def get_testcase_builder(self):
-        return self.__testcase_builder
-
-DefaultTester(app_dir).test()
+ChatTest(app_dir).chat('我不出租啦')
 
